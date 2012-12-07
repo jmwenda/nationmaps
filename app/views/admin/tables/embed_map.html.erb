@@ -18,6 +18,22 @@
     <style type="text/css">
       html, body {height: 100%; padding: 0; margin: 0;}
       #map {position:absolute; width:100%; top:0; right:0; bottom:0; left:0;}
+      #legend{position:absolute; bottom:7px;width:auto; left:85%;background:white; display:block;}
+      #legend  li span {
+  display: block;
+  float: left;
+  list-style-type: none;
+  height: 16px;
+  width: 30px;
+  margin-right: 5px;
+  margin-left: 0;
+  border: 1px solid #999;
+}
+#legend ul li{
+width:auto;
+list-style-type: none;
+
+}
     </style>
 
     <% if Rails.env.development? %>
@@ -35,7 +51,9 @@
   </head>
   <body>
     <% if @table.public? %>
-    <div id="map"></div>
+    <div id="map">
+    </div>
+    <div id="legend"><%= @table.legend_html %> </div>
     <% end %>
 
     <% if @table.map.provider == 'googlemaps' %>

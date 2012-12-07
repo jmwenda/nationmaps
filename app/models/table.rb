@@ -1306,6 +1306,33 @@ TRIGGER
   def table_style
     self.map.data_layers.first.options['tile_style']
   end
+  def generate_legend
+    style = self.map.data_layers.first.options['tile_style']
+    if style.start_with?('/** choropleth visualization */')
+      style = style.sub('/** choropleth visualization */','')
+      style = style.gsub("\n","")
+      #style = style.strip('/** choropleth visualization */')
+      style = style.gsub("}#", "},#")
+      style = style.split ","
+      style.shift
+      return style
+    else
+    end
+  end
+  def legend_html
+    style = generate_legend
+    title = "<b>Map depicting "+self.name+ ".</b>"
+    legend_html="<ul class='legend-labels'>"
+    style.each {|stylerow|
+       label = stylerow[/\[.*?\]/]
+       color = stylerow[/\{.*?\}/]
+       colorscheme = color[/\#.*?\;/]
+       row_html = "<li><span style='background:"+colorscheme+"'></span>"+label+"</li>"
+       legend_html = legend_html+row_html
+    }
+    legend_html = title + legend_html + "</ul>"
+    return legend_html.html_safe
+  end
 
   def table_style_from_redis
     $tables_metadata.get("map_style|#{self.database_name}|#{self.name}")
