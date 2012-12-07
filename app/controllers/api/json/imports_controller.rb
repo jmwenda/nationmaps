@@ -4,6 +4,8 @@ class Api::Json::ImportsController < Api::ApplicationController
 
   def index
     imports = current_user.importing_jobs
+    #debugger
+    imports = ""
     render :json => {:imports => imports, :success => true}
   end
 
@@ -22,12 +24,27 @@ class Api::Json::ImportsController < Api::ApplicationController
     append     = params[:append].presence == 'true'
     from_query = params[:sql].presence
     table_copy = params[:table_copy].presence
-
     if synchronous_import?
       #@data_import = Resque::ImporterJobs.process(current_user[:id], params[:table_name], file_uri)
       #render :json => {:item_queue_id => job_meta.meta_id, :success => true}
     else
       job = Resque::ImporterJobs.enqueue(current_user[:id], table_name, file_uri, table_id, append, nil, table_copy, from_query)
+      table_id = nil 
+      append = false 
+      migrate_table = nil
+      table_copy = nil
+      from_query = nil
+      mydata = DataImport.create( :queue_id      => job.meta_id,
+                         :user_id       => current_user[:id],
+                         :table_id      => table_id,
+                         :table_name    => table_name,
+                         :data_source   => file_uri,
+                         :updated_at    => Time.now,
+                         :append        => append,
+                         :migrate_table => migrate_table,
+                         :table_copy    => table_copy,
+                         :from_query    => from_query )
+     # debugger
       render_jsonp({:item_queue_id => job.meta_id, :success => true})
     end
   #rescue => e
