@@ -1321,10 +1321,17 @@ TRIGGER
   end
   def legend_html
     style = generate_legend
-    title = "<b>Map depicting "+self.name+ ".</b>"
+    title = "<b>"+self.description+ ".</b>"
+    if (self.description !=nil)
+       title = "<b>"+self.description+ ".</b>"
+    else
+       title = "<b>"+self.name+ ".</b>"
+    end
     legend_html="<ul class='legend-labels'>"
     style.each {|stylerow|
        label = stylerow[/\[.*?\]/]
+       label = label.scan(/\[(.*?)\]/).last.first
+       label = label.gsub("<=","less than")
        color = stylerow[/\{.*?\}/]
        colorscheme = color[/\#.*?\;/]
        row_html = "<li><span style='background:"+colorscheme+"'></span>"+label+"</li>"
