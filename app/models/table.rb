@@ -1321,11 +1321,10 @@ TRIGGER
   end
   def legend_html
     style = generate_legend
-    title = "<b>"+self.description+ ".</b>"
     if (self.description !=nil)
-       title = "<b>"+self.description+ ".</b>"
+       title = "<div id='legendtitle'>"+self.description+ ".</div>"
     else
-       title = "<b>"+self.name+ ".</b>"
+       title = "<div id='legendtitle'>"+self.name+ ".</div>"
     end
     legend_html="<ul class='legend-labels'>"
     style.each {|stylerow|
